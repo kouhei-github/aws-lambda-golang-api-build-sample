@@ -1,9 +1,9 @@
-# Line × OpenAi API × Golang
-質問やお悩み相談が来た際に、GPTエンジンを使用して、<br>
-完璧な返答をするLINE公式アカウント用のバックエンドアプリを作成しました。
-
-![385544301_628796422781454_6186934858729003709_n](https://github.com/kouhei-github/Line-Reply-Message-OpenAI-Golang/assets/49782052/2625b4fc-f7da-4d05-865f-297760a2d866)
-
+# AWS LambdaでGolangでAPIサーバーを構築
+技術スタック
+AWS Lambda
+Lambda Function URL
+Golang
+Golang(net/http)
 
 ---
 
@@ -22,16 +22,6 @@ LINE_CHANNEL_ACCESS_TOKEN=
 
 OPENAI_API_KEY=
 ```
-
----
-
-### 1.2 Lineのデベロッパー画面でwebhookを指定する
-localhostだと動かないので、<br>
-local出たてたwebサーバーを**ngrok**で外部からアクセスできるようにする必要がある
-
-![スクリーンショット 2023-10-12 10 16 22](https://github.com/kouhei-github/Line-Reply-Message-OpenAI-Golang/assets/49782052/ddcf8ba8-7ff5-43f6-adcb-87cb4fcdc125)
-
-
 ---
 
 ## 2. 起動・停止方法
@@ -55,11 +45,11 @@ docker compose down
 
 ---
 
-
-## 3. 動作確認
-下記から公式アカウントを追加して動作確認してください。
-
-![スクリーンショット 2023-10-12 9 22 15](https://github.com/kouhei-github/Line-Reply-Message-OpenAI-Golang/assets/49782052/6352a4b0-a852-4936-9035-f175804cc8e3)
-
----
-
+### 3. デプロイ方法
+```shell
+docker compose -f docker-compose-prod.yml build
+aws ecr get-login-password --region ap-northeast-1 --profile={プロファイル名} --region ap-northeast-1  | docker login --username AWS --password-stdin {account_id}.dkr.ecr.ap-northeast-1.amazonaws.com
+docker tag line-fortune-telling-prod-image:latest {account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/line-fortune-telling-prod-image:latest
+docker push {account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/line-fortune-telling-prod-image:latest
+aws lambda update-function-code --function-name {Lambda関数名} --image-uri {account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/line-fortune-telling-prod-image:latest --profile={プロファイル名}
+```
